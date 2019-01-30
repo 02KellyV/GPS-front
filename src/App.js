@@ -1,33 +1,54 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './Map.css';
-import {GoogleApiWrapper} from 'google-maps-react';
+import React from 'react';
+import { Router, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-class Map extends Component {
+import { history } from './helpers/history';
+import { alertActions } from './actions/alert.action';
+import { HomePage } from './HomePage/HomePage';
+import { LoginPage } from './LoginPage/LoginPage';
+import { RegisterPage } from './RegisterPage/RegisterPage';
+import { PrivateRoute } from './components/PrivateRoute';
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    const { dispatch } = this.props;
+    history.listen((location, action) => {
+      // clear alert on location change
+      dispatch(alertActions.clear());
+    });
+  }
+
   render() {
+    const { alert } = this.props;
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+        <div className="jumbotron">
+          <div className="container">
+            <div className="col-sm-8 col-sm-offset-2">
+              {alert.message &&
+              <div className={`alert ${alert.type}`}>{alert.message}</div>
+              }
+              <Router history={history}>
+                <div>
+                  <PrivateRoute exact path="/" component={HomePage} />
+                  <Route path="/login" component={LoginPage} />
+                  <Route path="/register" component={RegisterPage} />
+                </div>
+              </Router>
+            </div>
+          </div>
+        </div>
     );
   }
 }
 
-export default GoogleApiWrapper({
-  apiKey: (YOUR_GOOGLE_API_KEY_GOES_HERE)
-})(MapContainer)
+function mapStateToProps(state) {
+  const { alert } = state;
+  return {
+    alert
+  };
+}
 
-export default Map;
+const connectedApp = connect(mapStateToProps)(App);
+export { connectedApp as App };
