@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
-import './App.css';
+import './Map.css';
+import {GoogleApiWrapper} from 'google-maps-react';
 
-class App extends Component {
+class Map extends Component {
   render() {
     return (
       <div className="App">
@@ -25,4 +26,8 @@ class App extends Component {
   }
 }
 
-export default App;
+export default GoogleApiWrapper({
+  apiKey: (YOUR_GOOGLE_API_KEY_GOES_HERE)
+})(MapContainer)
+
+export default Map;
