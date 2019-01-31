@@ -21,11 +21,24 @@ class App extends React.Component {
   }
 
   render() {
-    const { alert } = this.props;
+    const { alert, maps } = this.props;
     return (
         <div className="jumbotron">
           <div className="container">
-            <div className="col-sm-8 col-sm-offset-2">
+            <aside className="col-sm-3">
+              <ul>
+                {maps.loading && <em>Loading maps...</em>}
+                {maps.error && <span className="text-danger">ERROR: {maps.error}</span>}
+                {maps.items &&
+                  maps.items.maps.map((map, index) =>
+                      <li>
+                        {new Date(map.date).toLocaleString()}
+                      </li>
+                  )
+                }
+              </ul>
+            </aside>
+            <div className="col-sm-8">
               {alert.message &&
               <div className={`alert ${alert.type}`}>{alert.message}</div>
               }
@@ -44,9 +57,10 @@ class App extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { alert } = state;
+  const { alert, maps } = state;
   return {
-    alert
+    alert,
+    maps
   };
 }
 

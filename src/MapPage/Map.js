@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
-import { mapActions } from "../actions/map.action";
 import { connect } from 'react-redux';
 
 const style = {
@@ -19,9 +18,11 @@ export class MapContainer extends Component {
             lng: 0
         }
     };
-    componentDidMount() {
+
+    componentDidMount = () => {
         navigator.geolocation.getCurrentPosition(this.showPosition);
-    }
+    };
+
     onMarkerClick = (props, marker, e) =>{
         this.setState({
             selectedPlace: props,
@@ -29,8 +30,8 @@ export class MapContainer extends Component {
             showingInfoWindow: true
         });
     };
+
     showPosition = (position) => {
-        this.props.dispatch(mapActions.Actual({lat: position.coords.latitude, lng: position.coords.longitude, date: new Date()}));
         this.setState({
             currentLocation: {
                 lat: position.coords.latitude,
@@ -39,8 +40,12 @@ export class MapContainer extends Component {
         });
     };
 
+    test = (asd, marker) => {
+      console.log(marker,"aquí");
+    };
+
     render() {
-        const { maps } = this.props;
+        const { maps, map } = this.props;
         return (
             <Map
                 google={this.props.google}
@@ -51,15 +56,15 @@ export class MapContainer extends Component {
                     lng: this.state.currentLocation.lng
                 }}
             >
-                {maps.loading && <em>Loading users...</em>}
+                {maps.loading && <em>Loading marker...</em>}
                 {maps.error && <span className="text-danger">ERROR: {maps.error}</span>}
                 {maps.items &&
-                    maps.items.map((map, index) =>
-                        <Marker onClick={this.onMarkerClick}
-                                name={new Date(map.date).toLocaleString()}
-                                position={{lat: map.lat, lng: map.lng}}
-                        />
-                    )
+                maps.items.maps.map((map, index) =>
+                    <Marker onClick={this.onMarkerClick}
+                            name={new Date(map.date).toLocaleString()}
+                            position={{lat: map.lat, lng: map.lng}}
+                    />
+                )
                 }
 
 
@@ -78,8 +83,13 @@ export class MapContainer extends Component {
 
 function mapsStateToProps(state) {
     const { maps } = state;
+    let map = {};
+    if (maps.items){
+        map = maps.items.map;
+    }
     return {
-        maps
+        maps,
+        map
     };
 }
 

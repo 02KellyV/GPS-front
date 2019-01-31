@@ -3,7 +3,7 @@ export const mapService = {
     actual
 };
 
-const api = 'https://test-gps-villa.herokuapp.com';
+const api = 'http://localhost:3001';
 
 function logout() {
     // remove user from local storage to log user out
